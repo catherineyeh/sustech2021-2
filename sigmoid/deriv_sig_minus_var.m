@@ -1,6 +1,7 @@
 % Inputs
 %       y: variable
 %       c: constant
+% Output: The derivative of sig_minus_var.m with respect to y
 
 function dy = deriv_sig_minus_var(y, c, epsilon)
 
