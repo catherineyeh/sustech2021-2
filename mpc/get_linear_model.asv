@@ -24,7 +24,12 @@ df02_dwe = -1;
 
 Ap = config.dt * [df01_dx1 df01_dx2; df02_dx1 df02_dx2] + eye(2);
 Bp = config.dt * [df01_du; df02_du];
-Cp = config.dt * [];
+Cp = config.dt * [df01_dwr df01_dwe; df02_dwr df02_dwe];
 bp = config.dt * [f01; f02];
+
+Ap_bar = Ap;
+Bp_bar = Bp / config.a2;
+Cp_bar = Cp / config.a2;
+bp_bar = (Ap - eye
 end
 
