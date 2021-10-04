@@ -1,7 +1,8 @@
 % Inputs
 %       y: variable
 %       c: constant
-% Output: The derivative of sig_plus_var.m with respect to y
+% Output: The derivative of sig_plus_var.m with respect to y as a function
+% of y
 
 function dy = deriv_sig_plus_var(y, c)
 

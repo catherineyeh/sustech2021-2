@@ -8,6 +8,6 @@ function out = sig_plus_var(y, c)
 
     epsilon = 0.01;
     
-    out = 1 / (1 + exp((y - c) / epsilon));
+    out = 1 / ( 1 + exp((y-c)/epsilon) );
 
 end

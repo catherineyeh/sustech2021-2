@@ -1,7 +1,8 @@
 % Inputs
 %       y: variable
 %       c: constant
-% Output: The derivative of sig_minus_var.m with respect to y
+% Output: The derivative of sig_minus_var.m with respect to y as a function
+% of y
 
 function dy = deriv_sig_minus_var(y, c)
 
@@ -11,7 +12,7 @@ function dy = deriv_sig_minus_var(y, c)
 
 epsilon = 0.01;
 
-dy = (1 / epsilon) * exp((c - y) / epsilon) * (1 + exp((c - y) / epsilon))^(-2);
+dy = (1/epsilon) * exp((c-y)/epsilon) * ( 1 + exp((c-y)/epsilon) )^(-2);
 
 end
 
