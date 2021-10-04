@@ -30,6 +30,7 @@ bp = config.dt * [f01; f02];
 Ap_bar = Ap;
 Bp_bar = Bp / config.a2;
 Cp_bar = Cp / config.a2;
+s = [0; config.zveg];
 bp_bar = (Ap - eye(2)) * s - Bp * best_u / config.a2 + bp / config.a2;
 
 end
