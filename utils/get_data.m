@@ -5,6 +5,7 @@ function [wr, rn, temp, dew_pt, wind] = get_data(option, config)
 %   option: "dry" or "wet"
 %   config parameters: a1pipe, a2, sim_length
 % Output
+%   column vectors
 %   wr: rainfall rate [m^3/s]
 %   rn: solar irradiance [MJ/m^2day]
 %   temp: temperature [degree C]

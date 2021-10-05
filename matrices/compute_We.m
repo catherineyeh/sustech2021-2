@@ -1,5 +1,6 @@
 function We = compute_We(config, rn_n, temp_n, dew_pt_n, wind_n)
 %COMPUTE_WE 
+% rn_n, temp_n, dew_pt_n, wind_n should be column vectors
 
     % parameters
     G = 0.1 * rn_n;  % soil heat flux density [MJ/(m^2*day)] https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2407&context=usdaarsfacpub#:~:text=The%20amount%20of%20thermal%20energy,day%20or%20between%20sea%2D%20sons.
@@ -18,7 +19,9 @@ function We = compute_We(config, rn_n, temp_n, dew_pt_n, wind_n)
     ea_n = 0.6108 * exp((17.27 * dew_pt_n) ./ (dew_pt_n + 237.3));   % actual vapour pressure
 
     E = (0.48*Delta*(rn_n-G) + (gamma*900*wind_n .* (es_n-ea_n))/(Tmean+273))./(Delta + gamma*(1+0.34*wind_n));
-    
+    if size(E, 2) > 1
+        error("compute_We E dimension is wrong");
+    end
     Cevap = 0.001/86400;   % convert from [mm/day] to [m/s]
     a2 = config.a2;
     We = Cevap * a2 * E;  % [m^3/s]

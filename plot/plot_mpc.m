@@ -1,12 +1,12 @@
 function [] = plot_mpc(option)
     rng('default');
     config = fill_config();
-    pump = fill_pump_params();
+    pump = fill_pump_params(config);
     
     % initial conditions
     x1bar = config.a1 * 100;
     x2bar = config.a2 * (config.zveg / 100);
-    wr1bar = 0; wr2bar = 0; webar = 0;
+    wrbar = 0; webar = 0;
     best_u = 0.1;
 
     % load data
@@ -24,9 +24,11 @@ function [] = plot_mpc(option)
         rn_n = get_lookahead(config.lookahead, t+1, rn);
         dew_pt_n = get_lookahead(config.lookahead, t+1, dew_pt);
         wind_n = get_lookahead(config.lookahead, t+1, wind);
+        temp_n = get_lookahead(config.lookahead, t+1, temp);
         
         [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar] = ... 
-        get_linear_model(config, lambda, x1bar, x2bar, best_u, wrbar, webar);
+        get_linear_model(config, pump, config.lambda, ... 
+        x1bar, x2bar, best_u, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n);
         
         best_u = get_best_u(A_hat, B_hat, C_hat, D_hat, L, yt, Wtilde, Q_bar, R_bar);
         
@@ -35,17 +37,15 @@ function [] = plot_mpc(option)
         webar = We(1);
         
         [x1bar, x2bar] = get_next_state( ...
-            config, x1bar, x2bar, best_u, wr1bar, wr2bar, webar ...
+            config, pump, x1bar, x2bar, best_u, wr1bar, wr2bar, webar ...
         );
         
         x_overtime_mpc(:, t + 2) = [x1bar, x2bar];
         best_u_overtime(:, t + 2) = best_u;
         we_overtime(:, t + 2) = webar;
-        wr1_overtime(:, t + 2) = wr1bar;
-        wr2_overtime(:, t + 2) = wr2bar;
+        wr_overtime(:, t + 2) = wrbar;
         
-        wr1bar = mean(wr1_overtime);
-        wr2bar = mean(wr2_overtime);
+        wrbar = mean(wr_overtime);
         webar = mean(we_overtime);
     end
 
