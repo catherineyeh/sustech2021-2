@@ -19,8 +19,8 @@ function [wr, rn, temp, dew_pt, wind] = get_data(option, config)
                 'PreserveVariableNames',true);
         wr = wr{:,:} / 1000 / 3600;
         wr = repelem(wr, 3600, 1);  % repeat entry 3600 times
-        wr1 = wr * config.a1pipe;
-        wr2 = wr * config.a2;
+        %wr1 = wr * config.a1pipe;
+        %wr2 = wr * config.a2;
         
         % we (evapotranspiration)
         rn_1 = readtable('Rn_march.csv', 'PreserveVariableNames', true);

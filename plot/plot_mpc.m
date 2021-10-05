@@ -1,0 +1,92 @@
+function [] = plot_mpc(option)
+    rng('default');
+    config = fill_config();
+    pump = fill_pump_params();
+    
+    % initial conditions
+    x1bar = config.a1 * 100;
+    x2bar = config.a2 * (config.zveg / 100);
+    wr1bar = 0; wr2bar = 0; webar = 0;
+    best_u = 0.1;
+
+    % load data
+    [wr, rn, temp, dew_pt, wind] = get_data(option, config);
+    
+    % initialize arrays
+    x_overtime_mpc = zeros(2, config.sim_length + 1);
+    best_u_overtime = zeros(1, config.sim_length + 1);
+    we_overtime = zeros(1, config.sim_length + 1);
+    wr_overtime = zeros(1, config.sim_length + 1);
+    
+       % MPC loop  
+    for t = 0 : config.sim_length
+        wr_n = get_lookahead(config.lookahead, t+1, wr);
+        rn_n = get_lookahead(config.lookahead, t+1, rn);
+        dew_pt_n = get_lookahead(config.lookahead, t+1, dew_pt);
+        wind_n = get_lookahead(config.lookahead, t+1, wind);
+        
+        [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar] = ... 
+        get_linear_model(config, lambda, x1bar, x2bar, best_u, wrbar, webar);
+        
+        best_u = get_best_u(A_hat, B_hat, C_hat, D_hat, L, yt, Wtilde, Q_bar, R_bar);
+        
+        wr1bar = wr1_n(1);
+        wr2bar = wr2_n(1);
+        webar = We(1);
+        
+        [x1bar, x2bar] = get_next_state( ...
+            config, x1bar, x2bar, best_u, wr1bar, wr2bar, webar ...
+        );
+        
+        x_overtime_mpc(:, t + 2) = [x1bar, x2bar];
+        best_u_overtime(:, t + 2) = best_u;
+        we_overtime(:, t + 2) = webar;
+        wr1_overtime(:, t + 2) = wr1bar;
+        wr2_overtime(:, t + 2) = wr2bar;
+        
+        wr1bar = mean(wr1_overtime);
+        wr2bar = mean(wr2_overtime);
+        webar = mean(we_overtime);
+    end
+
+    simulation_time_horizon = 0 : config.sim_length + 1;
+    simulation_time_horizon = simulation_time_horizon * config.dt;
+
+    figure(1)
+    subplot(2,1,1);
+    plot(simulation_time_horizon, x_overtime_mpc(1,:), '-b'); hold on;
+    legend('MPC');
+    title('Water volume in x1 over time')
+    xlabel('Time (seconds)');
+    ylabel('x1 [m^3]');
+
+    subplot(2,1,2);
+    plot(simulation_time_horizon, x_overtime_mpc(2,:), '-b'); hold on;
+    legend('MPC');
+    title('Water volume in x2 over time');
+    xlabel('Time (seconds)');
+    ylabel('x2 [m^3]');
+
+    figure(2)
+    plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), '-b');  hold on;
+    legend('MPC');
+    title('Deviation from desired x2 [m^3]');
+    xlabel('Time (seconds)');
+
+    figure(3)
+    plot(simulation_time_horizon, best_u_overtime, '-b'); hold on;
+    legend('MPC');
+    title('Control input u over time');
+    xlabel('Time (seconds)');
+    ylabel('u');
+
+    figure(4)
+    plot(simulation_time_horizon, wr2_overtime);
+    title('Rainfall rate tank 2 over time [m^3/s]')
+    xlabel('Time (seconds)');
+
+    figure(5)
+    plot(simulation_time_horizon, we_overtime);
+    title('Evaporation rate over time [m/s]'); xlabel('Time (seconds)');
+end
+

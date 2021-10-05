@@ -1,8 +1,7 @@
 function [A_hat, B_hat, C_hat, D_hat, L, ...
-         Wrtilde, Wetilde, yt, R_bar, Q_bar] = ... 
+         Wtilde, yt, R_bar, Q_bar] = ... 
 get_linear_model(config, lambda, ... 
-        x1bar, x2bar, best_u, wrbar, webar, ...
-        wr_n, rn_n, temp_n, dew_pt_n, wind_n)
+        x1bar, x2bar, best_u, wrbar, webar)
     
 % Non-linear model:
 f01 = wrbar * config.ain - qout_e(config, x1bar) - qpump_e(config, x1bar, x2bar, ubar);
@@ -41,8 +40,9 @@ D_hat = Matrix_tilde(config.lookahead, Ap_bar, eye(2));
 L = b_bar_matrix(N, bp_bar);
 
 yt = -s;
-Wetilde = compute_We(config, rn_n, temp_n, dew_pt_n, wind_n)-compute_We(config, rn_n, temp_n, dew_pt_n, wind_n);
-Wrtilde = wr_n - wr_n;
+
+% CY todo: how to construct Wtilde
+Wtilde = zeros(2*config.lookahead, 2);
 
 R_bar = Diag(config.lookahead, lambda);
 Q = [0 0; 0 1];
