@@ -2,13 +2,13 @@ function config = fill_config()
 
     %% simulation parameters
     config.dt = 1;  % seconds
-    config.sim_length = 4 * 60 * 60 / config.dt; % 4 hours (M)
+    config.sim_length = 10 * 60 * 60 / config.dt; % 10 hours (M)
     config.lookahead = 10;  % look ahead horizon, 10 seconds (N)   
     config.epsilon = 0.01;
     %% plotting parameters
     config.colors = ['-b', ':m', 'k--o', '--r', ':g'];
     %% tuning parameters
-    config.u = 0.5;
+    config.u = 0;
     config.lambda = 0.5;
     %% universal parameters
     config.g = 9.81;  % graviational constant m/s^2

@@ -80,7 +80,7 @@ function [] = plot_mpc(option)
     ylabel('u');
 
     figure(4)
-    plot(simulation_time_horizon, wr2_overtime);
+    plot(simulation_time_horizon, wr_overtime * config.a2);
     title('Rainfall rate tank 2 over time [m^3/s]')
     xlabel('Time (seconds)');
 
