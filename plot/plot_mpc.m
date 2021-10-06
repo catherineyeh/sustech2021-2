@@ -32,12 +32,11 @@ function [] = plot_mpc(option)
         
         best_u = get_best_u(A_hat, B_hat, C_hat, D_hat, L, yt, Wtilde, Q_bar, R_bar);
         
-        wr1bar = wr1_n(1);
-        wr2bar = wr2_n(1);
-        webar = We(1);
+        wrbar = wr_n(1);
+        webar = Wtilde(2,1);
         
         [x1bar, x2bar] = get_next_state( ...
-            config, pump, x1bar, x2bar, best_u, wr1bar, wr2bar, webar ...
+            config, pump, x1bar, x2bar, best_u, wrbar, webar ...
         );
         
         x_overtime_mpc(:, t + 2) = [x1bar, x2bar];
