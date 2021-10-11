@@ -2,7 +2,7 @@ function config = fill_config()
 
     %% simulation parameters
     config.dt = 1;  % seconds
-    config.sim_length = 10 * 60 * 60 / config.dt; % 10 hours (M)
+    config.sim_length = 30 * 60 * 60 / config.dt; % 10 hours (M)
     config.lookahead = 10;  % look ahead horizon, 10 seconds (N)   
     config.epsilon = 0.01;
     %% plotting parameters
@@ -25,7 +25,7 @@ function config = fill_config()
     config.cout = config.cd * pi * config.ro^2 * sqrt(2 * config.g);  % coefficient in (2)
     config.zcap = 0.5 * config.a2;  % soil capacity (m^3)
     config.zH = 0.6;  % minimum head above pump (m)
-    config.zo = 3;  % elevation of the cistern outlet (m)
+    config.zo = 104.19;  % elevation of the cistern outlet (m)
     config.zpump = 0.15;  % pump elevation w.r.t base of cistern (m)
     config.zsoil = 0.5;  % soil depth of the green roof
     config.zveg = 4.57 / 10^2;  % desired water depth (m)

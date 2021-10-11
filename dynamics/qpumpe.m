@@ -11,7 +11,7 @@ function q = qpumpe(x1, x2, u, pump, config)
     %sig2 = sig_minus_var(-x2, -config.a2*config.zveg);
     %I wrote new functions sig_plus_var.m and deriv_sig_plus_var.m to avoid negative sign errors.
     
-    q = npump_e * sig1 * sig2;
+    q = npump_e * sig1 * sig2
     
 end
 
