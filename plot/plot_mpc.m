@@ -18,14 +18,14 @@ function [] = plot_mpc(option)
     we_overtime = zeros(1, config.sim_length + 1);
     wr_overtime = zeros(1, config.sim_length + 1);
     
-       % MPC loop  
+    % MPC loop  
     for t = 0 : config.sim_length
         wr_n = get_lookahead(config.lookahead, t+1, wr);
         rn_n = get_lookahead(config.lookahead, t+1, rn);
         dew_pt_n = get_lookahead(config.lookahead, t+1, dew_pt);
         wind_n = get_lookahead(config.lookahead, t+1, wind);
         temp_n = get_lookahead(config.lookahead, t+1, temp);
-        
+
         [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar] = ... 
         get_linear_model(config, pump, config.lambda, ... 
         x1bar, x2bar, best_u, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n);
