@@ -7,7 +7,7 @@ function [] = plot_onoff(option)
     x1bar = config.a1 * 50;
     x2bar = config.a2 * (config.zveg / 1.5);
     wrbar = 0; webar = 0;
-    onoff_u = 0.1; u = 0;
+    onoff_u = 0; u = 0;
 
     % load data
     [wr, rn, temp, dew_pt, wind] = get_data(option, config);
@@ -25,14 +25,14 @@ function [] = plot_onoff(option)
         wind_n = get_lookahead(config.lookahead, t+1, wind);
         temp_n = get_lookahead(config.lookahead, t+1, temp);
         
-        [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar] = ... 
+        [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar, We] = ... 
         get_linear_model(config, pump, config.lambda, ... 
         x1bar, x2bar, u, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n);
     
-        onoff_u = get_onoff_u(config, 1, x1bar, x2bar);  % the 1 is unused
+        onoff_u = get_onoff_u(config, x1bar, x2bar, 1);  % the 1 is unused
         
         wrbar = wr_n(1);
-        webar = Wtilde(2,1);
+        webar = We(1);
         
         [x1bar, x2bar] = get_next_state( ...
             config, pump, x1bar, x2bar, onoff_u, wrbar, webar ...

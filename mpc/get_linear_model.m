@@ -1,5 +1,5 @@
 function [A_hat, B_hat, C_hat, D_hat, L, ...
-         Wtilde, yt, R_bar, Q_bar] = ... 
+         Wtilde, yt, R_bar, Q_bar, We] = ... 
 get_linear_model(config, pump, lambda, ... 
         x1bar, x2bar, ubar, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n)
     
@@ -46,7 +46,7 @@ We = compute_We(config, rn_n, temp_n, dew_pt_n, wind_n);
 Wr = wr_n;
 W = [We(:) Wr(:)]';
 W = W(:);
-if size(W) ~= size(b_bar_matrix(config.lookahead, [wrbar; webar]))
+if size(W) ~= size(b_bar_matrix(config.lookahead, [webar; wrbar]))
     error("size mismatch between W and b_bar_matrix(config.lookahead, [wrbar; webar])");
 end
 

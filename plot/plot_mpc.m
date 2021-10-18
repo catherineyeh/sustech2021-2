@@ -5,9 +5,9 @@ function [] = plot_mpc(option)
     
     % initial conditions
     x1bar = config.a1 * 50;
-    x2bar = config.a2 * (config.zveg / 1);
+    x2bar = config.a2 * (config.zveg / 1.3);
     wrbar = 0; webar = 0;
-    best_u = 0.5;
+    best_u = 0;
 
     % load data
     [wr, rn, temp, dew_pt, wind] = get_data(option, config);
@@ -26,15 +26,17 @@ function [] = plot_mpc(option)
         wind_n = get_lookahead(config.lookahead, t+1, wind);
         temp_n = get_lookahead(config.lookahead, t+1, temp);
 
-        [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar] = ... 
+        [A_hat, B_hat, C_hat, D_hat, L, Wtilde, yt, R_bar, Q_bar, We] = ... 
         get_linear_model(config, pump, config.lambda, ... 
         x1bar, x2bar, best_u, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n);
         
         best_u = get_best_u(A_hat, B_hat, C_hat, D_hat, L, yt, Wtilde, Q_bar, R_bar);
         
         wrbar = wr_n(1);
-        webar = Wtilde(2,1);
-        
+        webar = We(1);
+        if webar < 0
+            error("Negative evap");
+        end
         [x1bar, x2bar] = get_next_state( ...
             config, pump, x1bar, x2bar, best_u, wrbar, webar ...
         );
@@ -53,7 +55,7 @@ function [] = plot_mpc(option)
 
     figure(1)
     subplot(2,1,1);
-    plot(simulation_time_horizon, x_overtime_mpc(1,:), '-b'); hold on;
+    plot(simulation_time_horizon, x_overtime_mpc(1,:), '-b', 'linewidth', 2); hold on;
     legend('MPC');
     title('Water volume in x1 over time')
     xlabel('Time (seconds)');

@@ -11,7 +11,7 @@ B_tilde = zeros(N*dimi,N*dimj);
 
 n = 0;
 for i=1:dimi:N*dimi
-    inc = 0
+    inc = 0;
     for j=1:dimj:N*dimj
         if n == inc
             B_tilde(i:i+dimi-1,j:j+dimj-1) = Bp_bar;
