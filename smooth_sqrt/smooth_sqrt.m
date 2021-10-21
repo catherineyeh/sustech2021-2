@@ -1,7 +1,7 @@
 function phi_y = smooth_sqrt(y)
 % from Duan & Lian 2016 "Smoothing Approximation to the Square-Root Exact
 % Penalty Function," p. 89
-    epsilon = 0.01;
+    epsilon = 0.5;
     case1 = (y <= 0);
     case2 = (0 < y && y <= epsilon);
     case3 = (y > epsilon);

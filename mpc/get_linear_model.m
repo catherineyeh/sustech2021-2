@@ -3,7 +3,7 @@ function [A_hat, B_hat, C_hat, D_hat, L, ...
 get_linear_model(config, pump, lambda, ... 
         x1bar, x2bar, ubar, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n)
     
-% Non-linear model (same as f^epsilon on paper):
+% Non-linear model (same as f^epsilon on paper) evaluated at x1bar, x2bar, wrbar, webar:
 f01 = wrbar*config.a_in - qoute(x1bar, config) - qpumpe(x1bar, x2bar, ubar, pump, config);
 f02 = wrbar*config.a2 + qpumpe(x1bar, x2bar, ubar, pump, config) - webar - qdraine(config, x2bar);
 
@@ -24,7 +24,9 @@ df02_dwe = -1;
 
 Ap = config.dt * [df01_dx1 df01_dx2; df02_dx1 df02_dx2] + eye(2);
 Bp = config.dt * [df01_du; df02_du];
-Cp = config.dt * [df01_dwr df01_dwe; df02_dwr df02_dwe];
+%Cp = config.dt * [df01_dwr df01_dwe; df02_dwr df02_dwe];
+%I think that the code uses w = [we; wr] later in this function
+Cp = config.dt * [df01_dwe df01_dwr; df02_dwe df02_dwr];
 bp = config.dt * [f01; f02];
 
 Ap_bar = Ap;
@@ -35,7 +37,7 @@ s = [0; ztilde_veg];
 bp_bar = (Ap - eye(2)) * s - Bp * ubar / config.a2 + bp / config.a2;
 
 A_hat = A_tilde_matrix(config.lookahead, Ap_bar);
-B_hat = Matrix_tilde(config.lookahead, Ap_bar, Bp_bar); % issues here: test Bp_bar = [1;0] and Ap_bar 2x2
+B_hat = Matrix_tilde(config.lookahead, Ap_bar, Bp_bar); % I believe that this is correct.
 C_hat = Matrix_tilde(config.lookahead, Ap_bar, Cp_bar);
 D_hat = Matrix_tilde(config.lookahead, Ap_bar, eye(2));
 L = b_bar_matrix(config.lookahead, bp_bar);
@@ -47,7 +49,7 @@ Wr = wr_n;
 W = [We(:) Wr(:)]';
 W = W(:);
 if size(W) ~= size(b_bar_matrix(config.lookahead, [webar; wrbar]))
-    error("size mismatch between W and b_bar_matrix(config.lookahead, [wrbar; webar])");
+    error("size mismatch between W and b_bar_matrix(config.lookahead, [webar; wrbar])");
 end
 
 Wtilde = W - b_bar_matrix(config.lookahead, [webar; wrbar]);

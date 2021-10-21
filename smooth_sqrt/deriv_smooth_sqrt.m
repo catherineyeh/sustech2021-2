@@ -3,7 +3,7 @@
 
 function dphi_dy = deriv_smooth_sqrt(y)
 
-    epsilon = 0.01;
+    epsilon = 0.5;
     case1 = (y <= 0);
     case2 = (0 < y && y <= epsilon);
     case3 = (y > epsilon);

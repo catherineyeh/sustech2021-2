@@ -6,7 +6,7 @@
 
 function out = sig_minus_var(y, c)
 
-    epsilon = 0.1; %0.01;
+    epsilon = 0.5; %0.01;
     
     out = 1 / (1 + exp((c - y) / epsilon));
 
