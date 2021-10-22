@@ -25,8 +25,21 @@ for i = 1 : N_LAMBDAS
     % the value of x1bar seems enormous since the max height of tank 1 is
     % no more than 2m
     %
-    x1bar = config.a1 * (config.zo / 1.3);
+    % this is low x1bar
+    % x1bar = config.a1 * (config.zo / 1.3);
+    
+    %this is high x1bar
+    x1bar = config.a1 * (config.zo * 1.3);
+    
+    %this is low x2bar
     x2bar = config.a2 * (config.zveg / 1.3);
+    
+    % this is high x2bar (desired x2bar = 3.144)
+    % x2bar = config.a2 * (config.zveg * 1.3);
+    % x2bar = 3.5; % not very interesting, it's too wet., perhaps
+    % interesting in dry weather...
+    % x2bar = 3.2; 
+    
     wrbar = 0; webar = 0;
     best_u = 0;
     total_x2_deviation = 0;
