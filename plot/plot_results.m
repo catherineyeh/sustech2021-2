@@ -108,7 +108,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,1);
     plot(simulation_time_horizon, x_overtime_mpc(1,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('MPC: Water volume in cistern', 'interpreter', 'latex');
+        title('MPC', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$x_1$ (m$^3$)', 'interpreter', 'latex');
         legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
@@ -117,7 +117,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,2);
     plot(simulation_time_horizon, x_overtime_onoff(1,:),'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('ON/OFF: Water volume in cistern','interpreter', 'latex');
+        title('ON/OFF','interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         %ylabel('$x_1$ (m$^3$)', 'interpreter', 'latex');
         legend(config.u1, config.u2, config.u3, config.u4, config.u5,'interpreter', 'latex', 'FontSize', 14);
@@ -128,21 +128,21 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,1);
     plot(simulation_time_horizon, x_overtime_mpc(2,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('MPC: Water volume in green roof', 'interpreter', 'latex');
+        title('MPC', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$x_2$ (m$^3$)', 'interpreter', 'latex');
         desired_x2 = config.a2 * config.zveg * ones(size(simulation_time_horizon));
         plot(simulation_time_horizon, desired_x2, 'linestyle', ':', 'color', 'k', 'linewidth', 2);
-        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'Desired volume', 'interpreter', 'latex', 'FontSize', 14);
+        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'x_2^*', 'interpreter', 'latex', 'FontSize', 14);
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     subplot(1,2,2);
     plot(simulation_time_horizon, x_overtime_onoff(2,:),'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('ON/OFF: Water volume in green roof', 'interpreter', 'latex');
+        title('ON/OFF', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         plot(simulation_time_horizon, desired_x2, 'linestyle', ':', 'color', 'k', 'linewidth', 2);
-        legend(config.u1, config.u2, config.u3, config.u4, config.u5,'Desired volume','interpreter', 'latex', 'FontSize', 14);
+        legend(config.u1, config.u2, config.u3, config.u4, config.u5,'x_2^*','interpreter', 'latex', 'FontSize', 14);
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     
@@ -151,7 +151,8 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
     if i == N_LAMBDAS
         legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
-        title('MPC: Deviation from desired $x_2$ (m$^3$)', 'interpreter', 'latex');
+        title('MPC', 'interpreter', 'latex');
+        ylabel('$|x_2 - x_2^*|$ (m$^3$)', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gcf,'color','w'); set(gca,'FontSize',14);
@@ -160,7 +161,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, abs(x_overtime_onoff(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
     if i == N_LAMBDAS
         legend(config.u1, config.u2, config.u3, config.u4, config.u5, 'interpreter', 'latex', 'FontSize', 14);
-        title('ON/OFF: Deviation from desired $x_2$ (m$^3$)', 'interpreter', 'latex');
+        title('ON/OFF', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gcf,'color','w'); set(gca,'FontSize',14);
@@ -171,7 +172,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, best_u_overtime_mpc, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
         legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
-        title('MPC: Control input', 'interpreter', 'latex');
+        title('MPC', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$u$ (no units)', 'interpreter', 'latex');
         xlim(myXLIM);
@@ -181,7 +182,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, best_u_overtime_onoff, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
         legend(config.u1, config.u2, config.u3, config.u4, config.u5, 'interpreter', 'latex', 'FontSize', 14);
-        title('ON/OFF: Control input', 'interpreter', 'latex');
+        title('ON/OFF', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gcf,'color','w'); set(gca,'FontSize',14);
@@ -192,23 +193,24 @@ for i = 1 : N_LAMBDAS % same as number of us
         set(gcf,'color','w');
         subplot(1,2,1)
         plot(simulation_time_horizon, wr_overtime, 'linewidth', 2);
-        title('Precipitation rate', 'interpreter', 'latex')
+        title('Precipitation', 'interpreter', 'latex')
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$w_r$ (m/s)', 'FontSize', 16, 'interpreter', 'latex');
         xlim(myXLIM);
         set(gca,'FontSize',14);
         subplot(1,2,2)
         plot(simulation_time_horizon, we_overtime, 'linewidth', 2);
-        title('Evapotranspiration rate', 'interpreter', 'latex');
+        title('Evapotranspiration', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$w_e$ (m$^3$/s)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gca,'FontSize',14);
     end
 end
-    %set(groot,'defaultAxesTickLabelInterpreter','latex');
-    %a = get(gca, 'XTickLabel');
-    %set(gca, 'XTickLabel', a, 'fontsize', 16);
+
+    EXTRA = 500;
+    yMIN = min([x2_deviations_mpc,x2_deviations_onoff]) - EXTRA;
+    yMAX = max([x2_deviations_mpc,x2_deviations_onoff]) + EXTRA;
     figure(11)
     set(gcf,'color','w'); 
     sum_deviation_len = 1:size(config.lambdas,2);
@@ -220,22 +222,22 @@ end
     
     subplot(1,2,1);
     scatter(sum_deviation_len, x2_deviations_mpc, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k', 'LineWidth', 2.5);
-    title('MPC: Total deviation from desired $x_2$ (m$^3$)', 'interpreter', 'latex');
+    title('MPC', 'interpreter', 'latex');
+    ylabel('Total $|x_2 - x_2^*|$ over time (m$^3$)', 'interpreter', 'latex');
     xticks([1 2 3 4 5]);
     xticklabels({config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5});
+    ylim([yMIN yMAX]); grid on;
     set(gca,'FontSize',14);
     
     subplot(1,2,2);
     scatter(sum_deviation_len, x2_deviations_onoff, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k', 'LineWidth', 2.5);
-    title('ON/OFF: Total deviation from desired $x_2$ (m$^3$)','interpreter', 'latex');
+    title('ON/OFF','interpreter', 'latex');
     xticks([1 2 3 4 5]);
     xticklabels({config.u1, config.u2, config.u3, config.u4, config.u5});
+    ylim([yMIN yMAX]); grid on;
     set(gca,'FontSize',14);
+    
 end
-
-% x1bar = config.a1 * 50;
-    % the value of x1bar seems enormous since the max height of tank 1 is
-    % no more than 2m
 
 % this is high x2bar (desired x2bar = 3.144)
     % x2bar = config.a2 * (config.zveg * 1.3);

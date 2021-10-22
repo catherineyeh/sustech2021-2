@@ -12,11 +12,11 @@ function config = fill_config()
     %% tuning parameters
     config.u = 0.5;
     config.onoffu = [2.5, 2, 1.5, 1, 0.5];
-    config.u1 = 'max $u = 2.5$';
-    config.u2 = 'max $u = 2$';
-    config.u3 = 'max $u = 1.5$';
-    config.u4 = 'max $u = 1$';
-    config.u5 = 'max $u = 0.5$';
+    config.u1 = '$v = 2.5$';
+    config.u2 = '$v = 2$';
+    config.u3 = '$v = 1.5$';
+    config.u4 = '$v = 1$';
+    config.u5 = '$v = 0.5$';
     %config.lambda = 0.001;
     %config.lambdas = [0.001, 0.01, 0.1, 1, 10];
     
@@ -29,11 +29,10 @@ function config = fill_config()
     %% universal parameters
     config.g = 9.81;  % graviational constant m/s^2
     %% system parameters
-    config.a1 = 72;  % surface area of tank 1 m^2
-    % the tank should hold about 100 m^3 and have a height of 2.4 m according to drawing
-    % so surface area should be about 100/2.4 = 41.67 m^2?
-    %
+    height_of_tank = 4; %m, assumed since drawing is not clear
+    config.a1 = 100/height_of_tank;  % surface area of tank 1 m^2
     config.a2 = 68.8;  % surface area of tank 2 m^2
+    % 914.4 * 2279.7 mm^2 per test bed * 33 test beds
     config.a_in = (0.305)^2 * pi;  % area of flow through the pump
     config.a_hat = -5.78 * 10^5;  % coefficient of (3b)
     config.c_hat = 55.2;  % coefficient in (3b)
@@ -48,7 +47,7 @@ function config = fill_config()
     % this looks about 2.4 m *3/5 in the drawing
     % the number 104.19, I believe refers to a distance in mm about the
     % center of the outlet.
-    config.zo = 2.4 * 3/5; % elevation of the cistern outlet (m)
+    config.zo = 3; % elevation of the cistern outlet (m), assumed since drawing is not clear
     config.zpump = 0.15;  % pump elevation w.r.t base of cistern (m)
     config.zsoil = 0.5;  % soil depth of the green roof (m)
     config.zveg = 4.57 / 10^2;  % desired water depth (m)
