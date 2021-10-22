@@ -25,7 +25,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     
     disp(['Evaluating lambda and maxu value ', num2str(i)]);
     % initial conditions
-    % x1bar_mpc = config.a1 * (config.zo / 1.3); % low x1bar
+    %x1bar_mpc = config.a1 * (config.zo / 1.3); % low x1bar
     x1bar_mpc = config.a1 * (config.zo * 1.3); % high x1bar
     x2bar_mpc = config.a2 * (config.zveg / 1.3); % low x2bar
     
@@ -133,7 +133,7 @@ for i = 1 : N_LAMBDAS % same as number of us
         ylabel('$x_2$ (m$^3$)', 'interpreter', 'latex');
         desired_x2 = config.a2 * config.zveg * ones(size(simulation_time_horizon));
         plot(simulation_time_horizon, desired_x2, 'linestyle', ':', 'color', 'k', 'linewidth', 2);
-        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'x_2^*', 'interpreter', 'latex', 'FontSize', 14);
+        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, '$x_2^*$', 'interpreter', 'latex', 'FontSize', 14);
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     subplot(1,2,2);
@@ -142,7 +142,7 @@ for i = 1 : N_LAMBDAS % same as number of us
         title('ON/OFF', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         plot(simulation_time_horizon, desired_x2, 'linestyle', ':', 'color', 'k', 'linewidth', 2);
-        legend(config.u1, config.u2, config.u3, config.u4, config.u5,'x_2^*','interpreter', 'latex', 'FontSize', 14);
+        legend(config.u1, config.u2, config.u3, config.u4, config.u5,'$x_2^*$','interpreter', 'latex', 'FontSize', 14);
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     

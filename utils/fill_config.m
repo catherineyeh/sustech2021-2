@@ -3,8 +3,8 @@ function config = fill_config()
     %% simulation parameters
     config.dt = 1;  % seconds
     config.sim_length = 12 * 60 * 60 / config.dt; % 12 hours (M) = 12 hr * 60 min/hr * 60 sec/min = 12*60*60 sec
-    %config.lookahead = 10;  % look ahead horizon, 10 seconds (N)   
-    config.lookahead = 10; % 30 seconds, ideally we want every 30 min but this takes too long
+    config.lookahead = 10;  % look ahead horizon, 10 seconds (N)   
+    %config.lookahead = 30; % 30 seconds, ideally we want every 30 min but this takes too long
     config.epsilon = 0.5;
     %% plotting parameters
     config.colors = ['b', 'm', 'k', 'r', 'g'];
