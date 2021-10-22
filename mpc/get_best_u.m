@@ -14,10 +14,13 @@ end
 u_star = U_star(1);
 
 %there is no guarantee that the inverse exists
-
 if ~isfinite(u_star) 
     u_star = 0;
     disp('issue with inverse operation in get_best_u so we set u_star to zero');
+end
+
+if u_star < 0
+    u_star = 0;
 end
 
 end

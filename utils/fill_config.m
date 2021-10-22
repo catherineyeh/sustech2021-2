@@ -12,7 +12,14 @@ function config = fill_config()
     %% tuning parameters
     config.u = 0.5;
     %config.lambda = 0.001;
-    config.lambdas = [0.001, 0.01, 0.1, 1, 10];
+    %config.lambdas = [0.001, 0.01, 0.1, 1, 10];
+    
+    config.lambdas = [0.00001, 0.0001, 0.001, 0.01, 0.1];
+    config.lambda1 = '$\lambda=0.00001$';
+    config.lambda2 = '$\lambda=0.0001$';
+    config.lambda3 = '$\lambda=0.001$';
+    config.lambda4 = '$\lambda=0.01$';
+    config.lambda5 = '$\lambda=0.1$';
     %% universal parameters
     config.g = 9.81;  % graviational constant m/s^2
     %% system parameters

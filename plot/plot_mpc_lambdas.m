@@ -38,8 +38,15 @@ for i = 1 : N_LAMBDAS
     % initialize arrays
     x_overtime_mpc = zeros(2, config.sim_length + 1);
     best_u_overtime = zeros(1, config.sim_length + 1);
+    best_qpump_overtime = zeros(1, config.sim_length + 1);
     we_overtime = zeros(1, config.sim_length + 1);
     wr_overtime = zeros(1, config.sim_length + 1);
+    
+    x_overtime_mpc(:, 1) = [x1bar; x2bar];
+    best_u_overtime(:, 1) = best_u;
+    best_qpump_overtime(:, 1) = 0;
+    we_overtime(:, 1) = webar;
+    wr_overtime(:, 1) = wrbar;
     
     % MPC loop  
     for t = 0 : config.sim_length
@@ -66,7 +73,7 @@ for i = 1 : N_LAMBDAS
         wrbar = wr_n(1);
         webar = We(1);
         
-        [x1bar, x2bar] = get_next_state( ...
+        [x1bar, x2bar, qpump] = get_next_state( ...
             config, pump, x1bar, x2bar, best_u, wrbar, webar ...
         );
         
@@ -79,6 +86,7 @@ for i = 1 : N_LAMBDAS
         x_overtime_mpc(:, t + 2) = [x1bar; x2bar];
         
         best_u_overtime(:, t + 2) = best_u;
+        best_qpump_overtime(:, t + 2) = qpump;
         we_overtime(:, t + 2) = webar;
         wr_overtime(:, t + 2) = wrbar;
         
@@ -88,51 +96,90 @@ for i = 1 : N_LAMBDAS
     end
     
     x2_deviations(1, i) = total_x2_deviation; % for ith value of lambda
-
+    myXLIM = [0 12];
+    %config.lambdas = [0.00001, 0.0001, 0.001, 0.01, 0.1];
+    
     figure(6)
-    subplot(2,1,1);
-    plot(simulation_time_horizon, x_overtime_mpc(1,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 4); hold on;
-    legend('$\lambda=0.001$', '$\lambda=0.01$', '$\lambda=0.1$', '$\lambda=1$', '$\lambda=10$', 'interpreter', 'latex', 'FontSize', 16);
-    title('Water volume in cistern over time', 'FontSize', 18, 'interpreter', 'latex')
-    xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
-    ylabel('$x_1$ (m$^3$)', 'interpreter', 'latex', 'FontSize', 16);
+    subplot(1,2,1);
+    plot(simulation_time_horizon, x_overtime_mpc(1,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
+    if i == N_LAMBDAS
+        %legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
+        title('MPC: Water volume in cistern', 'FontSize', 16, 'interpreter', 'latex')
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$x_1$ (m$^3$)', 'interpreter', 'latex', 'FontSize', 16);
+        set(gcf,'color','w'); set(gca,'FontSize',14);
+    end
 
-    subplot(2,1,2);
-    plot(simulation_time_horizon, x_overtime_mpc(2,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 4); hold on;
-    legend('$\lambda=0.001$', '$\lambda=0.01$', '$\lambda=0.1$', '$\lambda=1$', '$\lambda=10$', 'interpreter', 'latex', 'FontSize', 16);
-    title('Water volume in green roof over time', 'FontSize', 18, 'interpreter', 'latex');
-    xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
-    ylabel('$x_2$ (m$^3$)', 'FontSize', 16, 'interpreter', 'latex');
-
+    subplot(1,2,2);
+    plot(simulation_time_horizon, x_overtime_mpc(2,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
+    if i == N_LAMBDAS
+        title('MPC: Water volume in green roof', 'FontSize', 16, 'interpreter', 'latex');
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$x_2$ (m$^3$)', 'FontSize', 16, 'interpreter', 'latex');
+        desired_x2 = config.a2 * config.zveg * ones(size(simulation_time_horizon));
+        plot(simulation_time_horizon, desired_x2, 'linestyle', ':', 'color', 'k', 'linewidth', 2);
+        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'Desired volume', 'interpreter', 'latex', 'FontSize', 14);
+        set(gcf,'color','w'); set(gca,'FontSize',14);
+    end
+    
     figure(7)
-    plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 4);  hold on;
-    legend('$\lambda=0.001$', '$\lambda=0.01$', '$\lambda=0.1$', '$\lambda=1$', '$\lambda=10$', 'interpreter', 'latex');
-    title('Deviation from desired $x_2$ (m$^3$)', 'FontSize', 18, 'interpreter', 'latex');
-    xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
-
+    plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
+    if i == N_LAMBDAS
+        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
+        title('MPC: Deviation from desired $x_2$ (m$^3$)', 'FontSize', 16, 'interpreter', 'latex');
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        xlim(myXLIM);
+        set(gcf,'color','w'); set(gca,'FontSize',14);
+    end
+    
     figure(8)
-    plot(simulation_time_horizon, best_u_overtime, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 4); hold on;
-    legend('$\lambda=0.001$', '$\lambda=0.01$', '$\lambda=0.1$', '$\lambda=1$', '$\lambda=10$', 'interpreter', 'latex');
-    title('Proportion of max aggregate flow rate by pumps in series over time', 'FontSize', 18, 'interpreter', 'latex');
-    xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
-    ylabel('$u$ (no units)',  'FontSize', 16, 'interpreter', 'latex');
-
+    plot(simulation_time_horizon, best_u_overtime, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
+    if i == N_LAMBDAS
+        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
+        title('MPC: Control input', 'FontSize', 16, 'interpreter', 'latex');
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$u$ (no units)',  'FontSize', 16, 'interpreter', 'latex');
+        xlim(myXLIM);
+        set(gcf,'color','w'); set(gca,'FontSize',14);
+    end
+    
     figure(9)
-    plot(simulation_time_horizon, wr_overtime, 'linewidth', 4);
-    title('Precipitation rate over time', 'FontSize', 18, 'interpreter', 'latex')
-    xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
-    ylabel('$w_r$ (m/s)',  'FontSize', 16, 'interpreter', 'latex');
-
-    figure(10)
-    plot(simulation_time_horizon, we_overtime, 'linewidth', 4);
-    title('Evapotranspiration rate over time', 'FontSize', 18, 'interpreter', 'latex');
-    xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
-    ylabel('$w_e$ (m$^3$/s)',  'FontSize', 16, 'interpreter', 'latex');
+    plot(simulation_time_horizon, best_qpump_overtime, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
+    if i == N_LAMBDAS
+        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
+        title('MPC: Pump flow rate', 'FontSize', 16, 'interpreter', 'latex');
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$q_{pump}(x,u)$ (m$^3$/s)',  'FontSize', 16, 'interpreter', 'latex');
+        xlim(myXLIM);
+        set(gcf,'color','w'); set(gca,'FontSize',14);
+    end
+    
+    if i == N_LAMBDAS
+        figure(10)
+        set(gcf,'color','w');
+        subplot(1,2,1)
+        plot(simulation_time_horizon, wr_overtime, 'linewidth', 2);
+        title('Precipitation rate', 'FontSize', 16, 'interpreter', 'latex')
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$w_r$ (m/s)',  'FontSize', 16, 'interpreter', 'latex');
+        xlim(myXLIM);
+        set(gca,'FontSize',14);
+        
+        subplot(1,2,2)
+        plot(simulation_time_horizon, we_overtime, 'linewidth', 2);
+        title('Evapotranspiration rate', 'FontSize', 16, 'interpreter', 'latex');
+        xlabel('Time (h)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$w_e$ (m$^3$/s)',  'FontSize', 16, 'interpreter', 'latex');
+        xlim(myXLIM);
+        set(gca,'FontSize',14);
+       
+    end
 end
-    set(groot,'defaultAxesTickLabelInterpreter','latex');
-    a = get(gca, 'XTickLabel');
-    set(gca, 'XTickLabel', a, 'fontsize', 16);
+    %set(groot,'defaultAxesTickLabelInterpreter','latex');
+    %a = get(gca, 'XTickLabel');
+    %set(gca, 'XTickLabel', a, 'fontsize', 16);
     figure(11)
+    set(gcf,'color','w'); 
     
     sum_deviation_len = 1:size(config.lambdas,2);
     
@@ -144,9 +191,11 @@ end
     scatter(sum_deviation_len, x2_deviations, 'MarkerEdgeColor', 'k',...
               'MarkerFaceColor', 'k',...
               'LineWidth', 2.5);
-    title('Cumulative deviation from desired $x_2$ using MPC (m$^3$)', 'FontSize', 18, 'interpreter', 'latex');
+    title('MPC: Total deviation from desired $x_2$ (m$^3$)', 'FontSize', 16, 'interpreter', 'latex');
     xticks([1 2 3 4 5])
-    xticklabels({'$\lambda=0.001$', '$\lambda=0.01$', '$\lambda=0.1$', '$\lambda=1$', '$\lambda=10$'})
+    xticklabels({config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5})
+    set(gca,'FontSize',14);
+    
 
     
 end
