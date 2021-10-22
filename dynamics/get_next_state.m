@@ -1,4 +1,4 @@
-function [x1_plus1, x2_plus1, qpump] = get_next_state(config, pump, x1bar, x2bar, ubar, wrbar, webar)
+function [x1_plus1, x2_plus1] = get_next_state(config, pump, x1bar, x2bar, ubar, wrbar, webar)
 % get next state with non-linear model
 
 % Smoothed non-linear model:

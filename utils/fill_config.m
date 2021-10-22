@@ -11,6 +11,12 @@ function config = fill_config()
     config.styles = ['-', ':', '--', '-.', ':'];
     %% tuning parameters
     config.u = 0.5;
+    config.onoffu = [2.5, 2, 1.5, 1, 0.5];
+    config.u1 = 'max $u = 2.5$';
+    config.u2 = 'max $u = 2$';
+    config.u3 = 'max $u = 1.5$';
+    config.u4 = 'max $u = 1$';
+    config.u5 = 'max $u = 0.5$';
     %config.lambda = 0.001;
     %config.lambdas = [0.001, 0.01, 0.1, 1, 10];
     

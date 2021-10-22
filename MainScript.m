@@ -2,4 +2,4 @@
 
 close all; clearvars; clc;
 
-plot_mpc_lambdas("wet")
+plot_results("wet")
