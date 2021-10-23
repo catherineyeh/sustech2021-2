@@ -27,7 +27,8 @@ for i = 1 : N_LAMBDAS % same as number of us
     % initial conditions
     %x1bar_mpc = config.a1 * (config.zo / 1.3); % low x1bar
     x1bar_mpc = config.a1 * (config.zo * 1.3); % high x1bar
-    x2bar_mpc = config.a2 * (config.zveg / 1.3); % low x2bar
+    %x2bar_mpc = config.a2 * (config.zveg / 1.3); % low x2bar
+    x2bar_mpc = config.a2 * (config.zveg * 1.3); % high x2bar
     
     x1bar_onoff = x1bar_mpc;
     x2bar_onoff = x2bar_mpc;
