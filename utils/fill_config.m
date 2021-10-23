@@ -10,13 +10,13 @@ function config = fill_config()
     config.colors = ['b', 'm', 'k', 'r', 'g'];
     config.styles = ['-', ':', '--', '-.', ':'];
     %% tuning parameters
-    config.u = 0.5;
-    config.onoffu = [2.5, 2, 1.5, 1, 0.5];
-    config.u1 = '$v = 2.5$';
-    config.u2 = '$v = 2$';
-    config.u3 = '$v = 1.5$';
-    config.u4 = '$v = 1$';
-    config.u5 = '$v = 0.5$';
+    %config.u = 0.5;
+    config.onoffu = [2, 1.5, 1, 0.5, 0.2];
+    config.u1 = '$v = 2$';
+    config.u2 = '$v = 1.5$';
+    config.u3 = '$v = 1$';
+    config.u4 = '$v = 0.5$';
+    config.u5 = '$v = 0.2$';
     %config.lambda = 0.001;
     %config.lambdas = [0.001, 0.01, 0.1, 1, 10];
     

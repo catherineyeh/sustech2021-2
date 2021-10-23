@@ -1,6 +1,5 @@
-function [] = plot_results(option)
-% plots mpc overlaid
-% 
+function [] = plot_results(option, init_type)
+
 rng('default');
 config = fill_config();
 pump = fill_pump_params(config);
@@ -18,17 +17,29 @@ simulation_time_horizon = simulation_time_horizon / 3600 * config.dt;
 [wr, rn, temp, dew_pt, wind] = get_data(option, config);
 
 N_LAMBDAS = length(config.lambdas); N_MAXUS = length(config.onoffu);
-
 if N_LAMBDAS ~= N_MAXUS, error('number of lambdas and max us should be the same.'); end
 
+x1_LOW = config.a1 * (config.zo / 1.3);    % low x1bar
+x1_HIGH = config.a1 * (config.zo * 1.3);   % high x1bar
+x2_LOW = config.a2 * (config.zveg / 1.3);  % low x2bar
+x2_HIGH = config.a2 * (config.zveg * 1.3); % high x2bar
+
 for i = 1 : N_LAMBDAS % same as number of us
+    disp(['Evaluating lambda and maxu value ', num2str(i), init_type]);
     
-    disp(['Evaluating lambda and maxu value ', num2str(i)]);
     % initial conditions
-    %x1bar_mpc = config.a1 * (config.zo / 1.3); % low x1bar
-    x1bar_mpc = config.a1 * (config.zo * 1.3); % high x1bar
-    %x2bar_mpc = config.a2 * (config.zveg / 1.3); % low x2bar
-    x2bar_mpc = config.a2 * (config.zveg * 1.3); % high x2bar
+    if strcmp(init_type, 'low-low')
+        x1bar_mpc = x1_LOW; 
+        x2bar_mpc = x2_LOW;
+    elseif strcmp(init_type, 'high-low')
+        x1bar_mpc = x1_HIGH;
+        x2bar_mpc = x2_LOW;
+    elseif strcmp(init_type, 'high-high')
+        x1bar_mpc = x1_HIGH;
+        x2bar_mpc = x2_HIGH;
+    else
+        error('initial condition type not supported');
+    end
     
     x1bar_onoff = x1bar_mpc;
     x2bar_onoff = x2bar_mpc;
@@ -109,7 +120,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,1);
     plot(simulation_time_horizon, x_overtime_mpc(1,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('MPC', 'interpreter', 'latex');
+        title(['MPC, ',init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$x_1$ (m$^3$)', 'interpreter', 'latex');
         legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
@@ -118,9 +129,8 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,2);
     plot(simulation_time_horizon, x_overtime_onoff(1,:),'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('ON/OFF','interpreter', 'latex');
+        title(['On/Off, ', init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
-        %ylabel('$x_1$ (m$^3$)', 'interpreter', 'latex');
         legend(config.u1, config.u2, config.u3, config.u4, config.u5,'interpreter', 'latex', 'FontSize', 14);
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
@@ -129,7 +139,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,1);
     plot(simulation_time_horizon, x_overtime_mpc(2,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('MPC', 'interpreter', 'latex');
+        title(['MPC, ', init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$x_2$ (m$^3$)', 'interpreter', 'latex');
         desired_x2 = config.a2 * config.zveg * ones(size(simulation_time_horizon));
@@ -140,7 +150,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     subplot(1,2,2);
     plot(simulation_time_horizon, x_overtime_onoff(2,:),'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
-        title('ON/OFF', 'interpreter', 'latex');
+        title(['On/Off, ', init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         plot(simulation_time_horizon, desired_x2, 'linestyle', ':', 'color', 'k', 'linewidth', 2);
         legend(config.u1, config.u2, config.u3, config.u4, config.u5,'$x_2^*$','interpreter', 'latex', 'FontSize', 14);
@@ -152,7 +162,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
     if i == N_LAMBDAS
         legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
-        title('MPC', 'interpreter', 'latex');
+        title(['MPC, ', init_type], 'interpreter', 'latex');
         ylabel('$|x_2 - x_2^*|$ (m$^3$)', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         xlim(myXLIM);
@@ -162,7 +172,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, abs(x_overtime_onoff(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
     if i == N_LAMBDAS
         legend(config.u1, config.u2, config.u3, config.u4, config.u5, 'interpreter', 'latex', 'FontSize', 14);
-        title('ON/OFF', 'interpreter', 'latex');
+        title(['On/Off, ', init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gcf,'color','w'); set(gca,'FontSize',14);
@@ -173,7 +183,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, best_u_overtime_mpc, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
         legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
-        title('MPC', 'interpreter', 'latex');
+        title(['MPC, ', init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$u$ (no units)', 'interpreter', 'latex');
         xlim(myXLIM);
@@ -183,7 +193,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     plot(simulation_time_horizon, best_u_overtime_onoff, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
         legend(config.u1, config.u2, config.u3, config.u4, config.u5, 'interpreter', 'latex', 'FontSize', 14);
-        title('ON/OFF', 'interpreter', 'latex');
+        title(['On/Off, ', init_type], 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gcf,'color','w'); set(gca,'FontSize',14);
@@ -193,14 +203,14 @@ for i = 1 : N_LAMBDAS % same as number of us
         figure(10)
         set(gcf,'color','w');
         subplot(1,2,1)
-        plot(simulation_time_horizon, wr_overtime, 'linewidth', 2);
+        plot(simulation_time_horizon, wr_overtime, '-k', 'linewidth', 2);
         title('Precipitation', 'interpreter', 'latex')
         xlabel('Time (h)', 'interpreter', 'latex');
-        ylabel('$w_r$ (m/s)', 'FontSize', 16, 'interpreter', 'latex');
+        ylabel('$w_r$ (m/s)', 'interpreter', 'latex');
         xlim(myXLIM);
         set(gca,'FontSize',14);
         subplot(1,2,2)
-        plot(simulation_time_horizon, we_overtime, 'linewidth', 2);
+        plot(simulation_time_horizon, we_overtime, '-k', 'linewidth', 2);
         title('Evapotranspiration', 'interpreter', 'latex');
         xlabel('Time (h)', 'interpreter', 'latex');
         ylabel('$w_e$ (m$^3$/s)', 'interpreter', 'latex');
@@ -223,7 +233,7 @@ end
     
     subplot(1,2,1);
     scatter(sum_deviation_len, x2_deviations_mpc, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k', 'LineWidth', 2.5);
-    title('MPC', 'interpreter', 'latex');
+    title(['MPC, ', init_type], 'interpreter', 'latex');
     ylabel('Total $|x_2 - x_2^*|$ over time (m$^3$)', 'interpreter', 'latex');
     xticks([1 2 3 4 5]);
     xticklabels({config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5});
@@ -232,7 +242,7 @@ end
     
     subplot(1,2,2);
     scatter(sum_deviation_len, x2_deviations_onoff, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k', 'LineWidth', 2.5);
-    title('ON/OFF','interpreter', 'latex');
+    title(['On/Off, ', init_type],'interpreter', 'latex');
     xticks([1 2 3 4 5]);
     xticklabels({config.u1, config.u2, config.u3, config.u4, config.u5});
     ylim([yMIN yMAX]); grid on;

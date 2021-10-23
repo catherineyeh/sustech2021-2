@@ -18,7 +18,7 @@ function We = compute_We(config, rn_n, temp_n, dew_pt_n, wind_n)
     es_n = zeros(config.lookahead, 1) + es;
     ea_n = 0.6108 * exp((17.27 * dew_pt_n) ./ (dew_pt_n + 237.3));   % actual vapour pressure
 
-    E = (0.48*Delta*(rn_n-G) + (gamma*900*wind_n .* (es_n-ea_n))/(Tmean+273))./(Delta + gamma*(1+0.34*wind_n));
+    E = ( 0.408*Delta*(rn_n-G) + (gamma*900*wind_n .* (es_n-ea_n))/(Tmean+273) )./(Delta + gamma*(1+0.34*wind_n));
     if size(E, 2) > 1
         error("compute_We E dimension is wrong");
     end
