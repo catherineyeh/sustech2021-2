@@ -2,3 +2,7 @@
 *.asv
 *.asv
 *.asv
+*.fig
+results/oct_23_2021/cumdev_highlow.eps
+results/oct_23_2021/cumdev_lowlow.eps
+*.eps
