@@ -3,7 +3,7 @@ function [A_hat, B_hat, C_hat, D_hat, L, ...
 get_linear_model(config, pump, lambda, ... 
         x1bar, x2bar, ubar, wrbar, webar, wr_n, rn_n, temp_n, dew_pt_n, wind_n)
     
-% Non-linear model (same as f^epsilon on paper) evaluated at x1bar, x2bar, wrbar, webar:
+% Non-linear model (same as f^epsilon on paper) evaluated at x1bar, x2bar, ubar, wrbar, webar:
 f01 = wrbar*config.a_in - qoute(x1bar, config) - qpumpe(x1bar, x2bar, ubar, pump, config);
 f02 = wrbar*config.a2 + qpumpe(x1bar, x2bar, ubar, pump, config) - webar - qdraine(config, x2bar);
 
@@ -17,7 +17,7 @@ df01_du = - dqout_du - dqpump_du;
 df01_dwr = config.a_in;
 df01_dwe = 0;
 df02_dx1 = dqpump_dx1 - dqdrain_dx1;
-df02_dx2 = dqpump_dx2 - dqdrain_dx2;  % get Nan for dqdrain_dx2
+df02_dx2 = dqpump_dx2 - dqdrain_dx2;  
 df02_du = dqpump_du - dqdrain_du;
 df02_dwr = config.a2;
 df02_dwe = -1;

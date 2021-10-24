@@ -61,10 +61,10 @@ for i = 1 : N_LAMBDAS % same as number of us
     
     x_overtime_mpc(:, 1) = [x1bar_mpc; x2bar_mpc]; 
     x_overtime_onoff(:, 1) = [x1bar_onoff; x2bar_onoff];
-    best_u_overtime_mpc(:, 1) = best_u_mpc; 
-    best_u_overtime_onoff(:, 1) = best_u_onoff;
-    we_overtime(:, 1) = webar;
-    wr_overtime(:, 1) = wrbar;
+    best_u_overtime_mpc(1) = best_u_mpc; 
+    best_u_overtime_onoff(1) = best_u_onoff;
+    we_overtime(1) = webar;
+    wr_overtime(1) = wrbar;
     
     % Control loops 
     for t = 0 : config.sim_length
@@ -102,13 +102,17 @@ for i = 1 : N_LAMBDAS % same as number of us
         x_overtime_mpc(:, t + 2) = [x1bar_mpc; x2bar_mpc];
         x_overtime_onoff(:, t + 2) = [x1bar_onoff; x2bar_onoff];
         
-        best_u_overtime_mpc(:, t + 2) = best_u_mpc;
-        best_u_overtime_onoff(:, t + 2) = best_u_onoff;
-        we_overtime(:, t + 2) = webar;
-        wr_overtime(:, t + 2) = wrbar;
+        best_u_overtime_mpc(t + 2) = best_u_mpc;
+        best_u_overtime_onoff(t + 2) = best_u_onoff;
+        we_overtime(t + 2) = webar;
+        wr_overtime(t + 2) = wrbar;
         
-        wrbar = mean(wr_overtime);
-        webar = mean(we_overtime);
+        wrbar = mean( wr_overtime(1: t + 2) );
+        webar = mean( we_overtime(1: t + 2) );
+        
+        % we need to average data up to time t+2 not the entire vector
+        % a future implementation could include a moving average (weighting
+        % later measurements more heavily than earlier ones)
     
     end
     
