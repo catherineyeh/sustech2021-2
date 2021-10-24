@@ -1,4 +1,6 @@
-function [x2_deviations_mpc, x2_deviations_onoff] = plot_results(option, init_type)
+function [x2_deviations_mpc, x2_deviations_onoff] = plot_results_init(option, init_type, figgroup, N_FIG)
+
+fig_START = (figgroup-1)*N_FIG; %starting index for group of figures
 
 % rng('default');
 config = fill_config();
@@ -120,7 +122,7 @@ for i = 1 : N_LAMBDAS % same as number of us
     x2_deviations_onoff(1, i) = total_x2_deviation_onoff; % for ith value of u
     myXLIM = [0 12];
     
-    figure
+    figure(fig_START + 1)
     subplot(1,2,1);
     plot(simulation_time_horizon, x_overtime_mpc(1,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
@@ -139,7 +141,7 @@ for i = 1 : N_LAMBDAS % same as number of us
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     
-    figure
+    figure(fig_START + 2)
     subplot(1,2,1);
     plot(simulation_time_horizon, x_overtime_mpc(2,:), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
@@ -161,28 +163,28 @@ for i = 1 : N_LAMBDAS % same as number of us
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     
-    figure
-    subplot(1,2,1);
-    plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
-    if i == N_LAMBDAS
-        legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
-        title(['MPC, ', init_type], 'interpreter', 'latex');
-        ylabel('$|x_2 - x_2^*|$ (m$^3$)', 'interpreter', 'latex');
-        xlabel('Time (h)', 'interpreter', 'latex');
-        xlim(myXLIM);
-        set(gcf,'color','w'); set(gca,'FontSize',14);
-    end
-    subplot(1,2,2);
-    plot(simulation_time_horizon, abs(x_overtime_onoff(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
-    if i == N_LAMBDAS
-        legend(config.u1, config.u2, config.u3, config.u4, config.u5, 'interpreter', 'latex', 'FontSize', 14);
-        title(['On/Off, ', init_type], 'interpreter', 'latex');
-        xlabel('Time (h)', 'interpreter', 'latex');
-        xlim(myXLIM);
-        set(gcf,'color','w'); set(gca,'FontSize',14);
-    end
+    %figure
+    %subplot(1,2,1);
+    %plot(simulation_time_horizon, abs(x_overtime_mpc(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
+    %if i == N_LAMBDAS
+    %    legend(config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5, 'interpreter', 'latex', 'FontSize', 14);
+    %    title(['MPC, ', init_type], 'interpreter', 'latex');
+    %    ylabel('$|x_2 - x_2^*|$ (m$^3$)', 'interpreter', 'latex');
+    %    xlabel('Time (h)', 'interpreter', 'latex');
+    %    xlim(myXLIM);
+    %    set(gcf,'color','w'); set(gca,'FontSize',14);
+    %end
+    %subplot(1,2,2);
+    %plot(simulation_time_horizon, abs(x_overtime_onoff(2,:) - config.a2*config.zveg), 'linestyle', config.styles(i), 'color', config.colors(i), 'linewidth', 2);  hold on;
+    %if i == N_LAMBDAS
+    %    legend(config.u1, config.u2, config.u3, config.u4, config.u5, 'interpreter', 'latex', 'FontSize', 14);
+    %    title(['On/Off, ', init_type], 'interpreter', 'latex');
+    %    xlabel('Time (h)', 'interpreter', 'latex');
+    %    xlim(myXLIM);
+    %    set(gcf,'color','w'); set(gca,'FontSize',14);
+    %end
     
-    figure
+    figure(fig_START + 3)
     subplot(1,2,1);
     plot(simulation_time_horizon, best_u_overtime_mpc, 'color', config.colors(i), 'linestyle', config.styles(i), 'linewidth', 2); hold on;
     if i == N_LAMBDAS
@@ -203,49 +205,24 @@ for i = 1 : N_LAMBDAS % same as number of us
         set(gcf,'color','w'); set(gca,'FontSize',14);
     end
     
-    if i == N_LAMBDAS
-        figure(10)
-        set(gcf,'color','w');
-        subplot(1,2,1)
-        plot(simulation_time_horizon, wr_overtime, '-k', 'linewidth', 2);
-        title('Precipitation', 'interpreter', 'latex')
-        xlabel('Time (h)', 'interpreter', 'latex');
-        ylabel('$w_r$ (m/s)', 'interpreter', 'latex');
-        xlim(myXLIM);
-        set(gca,'FontSize',14);
-        subplot(1,2,2)
-        plot(simulation_time_horizon, we_overtime, '-k', 'linewidth', 2);
-        title('Evapotranspiration', 'interpreter', 'latex');
-        xlabel('Time (h)', 'interpreter', 'latex');
-        ylabel('$w_e$ (m$^3$/s)', 'interpreter', 'latex');
-        xlim(myXLIM);
-        set(gca,'FontSize',14);
-    end
+    figure(fig_START + 4)
+    set(gcf,'color','w');
+    subplot(1,2,1)
+    plot(simulation_time_horizon, wr_overtime, '-k', 'linewidth', 2);
+    title('Precipitation', 'interpreter', 'latex')
+    xlabel('Time (h)', 'interpreter', 'latex');
+    ylabel('$w_r$ (m/s)', 'interpreter', 'latex');
+    xlim(myXLIM);
+    set(gca,'FontSize',14);
+    subplot(1,2,2)
+    plot(simulation_time_horizon, we_overtime, '-k', 'linewidth', 2);
+    title('Evapotranspiration', 'interpreter', 'latex');
+    xlabel('Time (h)', 'interpreter', 'latex');
+    ylabel('$w_e$ (m$^3$/s)', 'interpreter', 'latex');
+    xlim(myXLIM);
+    set(gca,'FontSize',14);
+    
 end
-
-    EXTRA = 500;
-    yMIN = min([x2_deviations_mpc,x2_deviations_onoff]) - EXTRA;
-    yMAX = max([x2_deviations_mpc,x2_deviations_onoff]) + EXTRA;
-    figure
-    set(gcf,'color','w'); 
-    sum_deviation_len = 1:size(config.lambdas,2);
-    
-    subplot(1,2,1);
-    scatter(sum_deviation_len, x2_deviations_mpc, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k', 'LineWidth', 2.5);
-    title(['MPC, ', init_type], 'interpreter', 'latex');
-    ylabel('Total $|x_2 - x_2^*|$ over time (m$^3$)', 'interpreter', 'latex');
-    xticks([1 2 3 4 5]);
-    xticklabels({config.lambda1, config.lambda2, config.lambda3, config.lambda4, config.lambda5});
-    ylim([yMIN yMAX]); grid on;
-    set(gca,'FontSize',14);
-    
-    subplot(1,2,2);
-    scatter(sum_deviation_len, x2_deviations_onoff, 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k', 'LineWidth', 2.5);
-    title(['On/Off, ', init_type],'interpreter', 'latex');
-    xticks([1 2 3 4 5]);
-    xticklabels({config.u1, config.u2, config.u3, config.u4, config.u5});
-    ylim([yMIN yMAX]); grid on;
-    set(gca,'FontSize',14);
     
 end
 
