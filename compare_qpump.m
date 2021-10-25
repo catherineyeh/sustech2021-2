@@ -27,7 +27,7 @@ bpump =1/ sqrt((f*l/D + kL)/(2*g*apump^2) - a);
 %fpump = bpump * sqrt(z);
 %qpumpe = fpump * (1 / (1 + exp((xp1_tilde - x1)/epsilon))) * (1 / (1 + exp((x2 - xp2_tilde)/epsilon)));
 
-fpump = piecewise(x2/a2>zveg, 0, x1/a1<zpump+zH, 0, u*bpump * sqrt(z));
+fpump = piecewise(x2/a2>=zveg, 0, x1/a1<zpump+zH, 0, u*bpump * sqrt(z));
 
 fpumpe = u* piecewise(0>=z, ...
     bpump*(2/3)*epsilon, ...
