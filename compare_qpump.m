@@ -4,8 +4,6 @@ epsilon = 0.5;
 g = 9.81;  % gravitational constant [m/s^2]
 f = 3.56; l = 18.4; D = 0.2; kL = 0.6; apump = 0.1^2*pi;
 
-c1 = (f*l/D + kL)/(2*g*apump^2);
-
 a2 = 68.8;  % surface area of tank 2 [m^2]
 a1 = 25;  % surface area of tank 1 [m^2]
 zveg = 4.57 / 100;  % minimum water level in tank 2 [m]
