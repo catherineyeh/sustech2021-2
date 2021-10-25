@@ -12,21 +12,26 @@ for i = 2 : N_INIT
     myMAX = max( [myMAX, x2_deviations_mpc{i},x2_deviations_onoff{i}] );
 end
 
-EXTRA = 500;
+EXTRA = 10^4;
 yMIN = myMIN - EXTRA;
 yMAX = myMAX + EXTRA;
+
+% these y-limits show all data
+yMIN = 0;
+yMAX = 6 * 10^4;
 
 markertype = {'o', 'd', 's'};
 markercolor ={'k', 'b', 'm'};
 
 figure
 set(gcf,'color','w'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');
 sum_deviation_len = 1:size(config.lambdas,2);
 
 for i = 1 : N_INIT
     
     subplot(1,2,1);
-    scatter(sum_deviation_len, x2_deviations_mpc{i}, 'filled', markercolor{i}, markertype{i}, 'LineWidth', 2.5);
+    scatter(sum_deviation_len, x2_deviations_mpc{i}, 'filled', markercolor{i}, markertype{i}, 'LineWidth', 3.5);
     hold on;
     if i == N_INIT
         %legend(init_type{1}, init_type{2}, init_type{3}, 'interpreter', 'latex');
@@ -39,7 +44,7 @@ for i = 1 : N_INIT
     end
     
     subplot(1,2,2);
-    scatter(sum_deviation_len, x2_deviations_onoff{i}, 'filled', markercolor{i}, markertype{i}, 'LineWidth', 2.5);
+    scatter(sum_deviation_len, x2_deviations_onoff{i}, 'filled', markercolor{i}, markertype{i}, 'LineWidth', 3.5);
     hold on;
     if i == N_INIT
         legend(init_type{1}, init_type{2}, init_type{3}, 'interpreter', 'latex');
