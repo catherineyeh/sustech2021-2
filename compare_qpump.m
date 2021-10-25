@@ -14,7 +14,6 @@ zpump = 0.15;  % pump elevation w.r.t. base of tank 1 [m]
 xp2_tilde = zveg*a2;
 xp1_tilde = (zH*zpump)*a1;
 d = 16;  % elevation of tank 2 relative to tank 1 [m]
-Hpump0 = 55.2366;  % pump head at 0 flow rate  [m]
 
 syms x1 x2 u;
 
